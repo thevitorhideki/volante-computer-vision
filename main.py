@@ -46,30 +46,30 @@ def filtro_de_cor(img_bgr, low_hsv, high_hsv):
 
 def mascara_or(mask1, mask2):
 
-    """ retorna a mascara or"""
+    """ retorna a mascara or """
     mask = cv2.bitwise_or(mask1, mask2)
     return mask
 
 def mascara_and(mask1, mask2):
-     """ retorna a mascara and"""
+     """ retorna a mascara and """
      mask = cv2.bitwise_and(mask1, mask2)
      
      return mask
 
 def desenha_cruz(img, cX,cY, size, color):
-     """ faz a cruz no ponto cx cy"""
+     """ faz a cruz no ponto cx cy """
      cv2.line(img,(cX - size,cY),(cX + size,cY),color,5)
      cv2.line(img,(cX,cY - size),(cX, cY + size),color,5)    
 
 def escreve_texto(img, text, origem, color):
-     """ faz a cruz no ponto cx cy"""
+     """ faz a cruz no ponto cx cy """
  
      font = cv2.FONT_HERSHEY_SIMPLEX
      
      cv2.putText(img, str(text), origem, font,1,color,2,cv2.LINE_AA)
 
 def contornos(mask):
-    """ retorna a lista de contornos"""
+    """ retorna a lista de contornos """
     contornos, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
     
     maior = None
@@ -87,24 +87,9 @@ def contornos(mask):
     if M["m00"] != 0:
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
-        
-        # cv2.drawContours(contornos_img, [maior], -1, [255, 0, 0], 5)
-       
-        #faz a cruz no centro de massa
-
-        
-        # Para escrever vamos definir uma fonte 
-        # texto = cY , cX
-        # origem = (0,50)
-        # escreve_texto(contornos_img, texto, origem, (0,255,0))
-            
     else:
     # se não existe nada para segmentar
         cX, cY = 0, 0
-        # Para escrever vamos definir uma fonte 
-        texto = ' '
-        origem = (0,50)
-        # escreve_texto(contornos_img, texto, origem, (0,0,255))
         
     return cX, cY
 
@@ -119,19 +104,14 @@ def image_da_webcam(img):
     mask_hsv_red2 = filtro_de_cor(img, red_lower_hsv2, red_upper_hsv2)
     mask_hsv = mascara_or(mask_hsv_red1, mask_hsv_red2)
 
-    # contornos_img_red = contornos(mask_hsv)[0]
     cXr, cYr = contornos(mask_hsv)
-    # contornos_img_blue = contornos(mask_hsv_blue)[0]
     cXb, cYb = contornos(mask_hsv_blue)
-    # img = cv2.bitwise_or(contornos_img_red, contornos_img_blue)
     
     return cXr, cYr, cXb, cYb
 
 cv2.namedWindow("original")
 # define a entrada de video para webcam
 vc = cv2.VideoCapture(0)
-
-#vc = cv2.VideoCapture("video.mp4") # para ler um video mp4 
 
 #configura o tamanho da janela 
 vc.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -164,7 +144,6 @@ while rval:
         keyboard.release(Key.up)
         print('frente')
 
-    #cv2.imshow("preview", img)
     cv2.imshow("original", frame)
     rval, frame = vc.read()
     key = cv2.waitKey(20)
